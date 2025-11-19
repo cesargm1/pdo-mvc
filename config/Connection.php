@@ -6,7 +6,7 @@ class Connection {
     private const SERVERNAME = "localhost";
     private const USERNAME   = "root";      
     private const PASSWORD   = "";          
-    private const DATABASE   = "test"; 
+    private const DATABASE   = "gestion_usuarios"; 
 
     public static function getConnection(): PDO {
         if (self::$conn === null) {
@@ -17,7 +17,7 @@ class Connection {
 
             try {
                 self::$conn = new PDO(
-                    $conexion,
+                    $dsn,
                     self::USERNAME,
                     self::PASSWORD,
                 );

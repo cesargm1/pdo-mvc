@@ -4,10 +4,10 @@ include_once '../config/Connection.php';
 class Usuarios {
    private string $usuario;
    private string $password;
-   private Rol $rol;
+   private string $rol;
    private $habilitado;
 
-   public function __construct(string $usuario, string $password,  enum $rol, bool $habilitado) {
+   public function __construct(string $usuario, string $password,  string $rol, bool $habilitado) {
      $this->usuario = $usuario;
      $this->password = $password;
      $this->rol = $rol;
@@ -46,17 +46,21 @@ public function getPassword () :string {
     return $this->habilitado;
    }
 
- public static function insertar(Usuarios $usuario ) :array {
+ public static function insertar(Usuarios $usuario ) :bool {
    $conn = Connection::getConnection();
    $query = "INSERT INTO usuarios (usuario, password, rol, habilitado) VALUES (?,?,?,?)";
    $stmt = $conn->prepare($query);
+   $nombre = $usuario->getUsuario();
+   $rol = $usuario->getRol();
+   $habilitado = $usuario->getHabilitado();
+
    $passwordHash = sha1($usuario->getPassword());
-   $stmt->bindParam(1, $usuario->getUsuario(), PDO::PARAM_STR);
+   $stmt->bindParam(1, $nombre, PDO::PARAM_STR);
    $stmt->bindParam(2, $passwordHash, PDO::PARAM_STR);
-   $stmt->bindParam(3, $usuario->getRol(), PDO::PARAM_STR);
-   $stmt->bindParam(4, $usuario->getHabilitado(), PDO::PARAM_INT);
+   $stmt->bindParam(3, $rol, PDO::PARAM_STR);
+   $stmt->bindParam(4, $habilitado, PDO::PARAM_INT);
    
-    $stmt->execute();
-    return $usuario;
+   return $stmt->execute();
+    
  }
 }
